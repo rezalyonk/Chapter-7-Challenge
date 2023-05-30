@@ -155,8 +155,10 @@ describe('CarController', () => {
       isCurrentlyRented: false,
     });
     expect(resMock.status).toHaveBeenCalledWith(200);
-    expect(resMock.json).toHaveBeenCalledWith(car); // Mengganti updatedCar dengan car
+    expect(resMock.json).toHaveBeenCalledWith(updatedCar); // Mengganti car dengan updatedCar
   });
+  
+  
   
   
 
