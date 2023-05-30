@@ -8,6 +8,7 @@ describe('CarController', () => {
   let dayjsMock;
   let reqMock;
   let resMock;
+  let nextMock;
 
   beforeEach(() => {
     carModelMock = {};
@@ -37,6 +38,8 @@ describe('CarController', () => {
       json: jest.fn(),
       end: jest.fn(),
     };
+
+    nextMock = jest.fn();
   });
 
   test('handleListCars should return cars and pagination meta', async () => {
@@ -46,7 +49,7 @@ describe('CarController', () => {
     carModelMock.count = jest.fn().mockResolvedValue(carCount);
     carController.buildPaginationObject = jest.fn().mockReturnValue({});
 
-    await carController.handleListCars(reqMock, resMock);
+    await carController.handleListCars(reqMock, resMock, nextMock);
 
     expect(resMock.status).toHaveBeenCalledWith(200);
     expect(resMock.json).toHaveBeenCalledWith({
@@ -63,7 +66,7 @@ describe('CarController', () => {
     const car = { id: 1, name: 'Car 1' };
     carModelMock.findByPk = jest.fn().mockResolvedValue(car);
 
-    await carController.handleGetCar(reqMock, resMock);
+    await carController.handleGetCar(reqMock, resMock, nextMock);
 
     expect(resMock.status).toHaveBeenCalledWith(200);
     expect(resMock.json).toHaveBeenCalledWith(car);
@@ -77,7 +80,7 @@ describe('CarController', () => {
 
     reqMock.body = newCar;
 
-    await carController.handleCreateCar(reqMock, resMock);
+    await carController.handleCreateCar(reqMock, resMock, nextMock);
 
     expect(resMock.status).toHaveBeenCalledWith(201);
     expect(resMock.json).toHaveBeenCalledWith(createdCar);
@@ -94,7 +97,7 @@ describe('CarController', () => {
     const rentStartedAt = '2023-05-29';
     const rentEndedAt = '2023-05-30';
     const car = { id: 1, name: 'Car 1' };
-    const userCar = { id: 1, carId: car.id, userId: 1, rentStartedAt, rentEndedAt };
+    const userCar = { id: 1, carId: car.id, rentStartedAt, rentEndedAt };
     carController.getCarFromRequest = jest.fn().mockResolvedValue(car);
     dayjsMock.mockReturnValueOnce(rentEndedAt);
     userCarModelMock.findOne = jest.fn().mockResolvedValue(null);
@@ -102,7 +105,7 @@ describe('CarController', () => {
 
     reqMock.body = { rentStartedAt };
 
-    await carController.handleRentCar(reqMock, resMock);
+    await carController.handleRentCar(reqMock, resMock, nextMock);
 
     expect(resMock.status).toHaveBeenCalledWith(201);
     expect(resMock.json).toHaveBeenCalledWith(userCar);
@@ -124,7 +127,7 @@ describe('CarController', () => {
 
     reqMock.body = { name: 'Updated Car', price: 1500, size: 'Large', image: 'updated.jpg' };
 
-    await carController.handleUpdateCar(reqMock, resMock);
+    await carController.handleUpdateCar(reqMock, resMock, nextMock);
 
     expect(resMock.status).toHaveBeenCalledWith(200);
     expect(resMock.json).toHaveBeenCalledWith(updatedCar);
@@ -144,7 +147,7 @@ describe('CarController', () => {
   test('handleDeleteCar should delete a car', async () => {
     carModelMock.destroy = jest.fn().mockResolvedValue(1);
 
-    await carController.handleDeleteCar(reqMock, resMock);
+    await carController.handleDeleteCar(reqMock, resMock, nextMock);
 
     expect(carModelMock.destroy).toHaveBeenCalledWith(reqMock.params.id);
     expect(resMock.status).toHaveBeenCalledWith(204);
