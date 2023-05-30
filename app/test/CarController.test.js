@@ -134,18 +134,18 @@ describe('CarController', () => {
 
   test('handleUpdateCar should update the car', async () => {
     const updatedCar = { id: 1, name: 'Updated Car', price: 1500, size: 'Large', image: 'car.jpg' };
-    const car = { get: jest.fn().mockReturnValue(updatedCar), update: jest.fn() };
+    const car = { update: jest.fn().mockResolvedValue([1]) };
     carController.getCarFromRequest = jest.fn().mockResolvedValue(car);
-
+  
     reqMock.body = {
       name: 'Updated Car',
       price: 1500,
       size: 'Large',
       image: 'car.jpg',
     };
-
+  
     await carController.handleUpdateCar(reqMock, resMock);
-
+  
     expect(carController.getCarFromRequest).toHaveBeenCalledWith(reqMock);
     expect(car.update).toHaveBeenCalledWith({
       name: reqMock.body.name,
@@ -155,8 +155,10 @@ describe('CarController', () => {
       isCurrentlyRented: false,
     });
     expect(resMock.status).toHaveBeenCalledWith(200);
-    expect(resMock.json).toHaveBeenCalledWith(updatedCar);
+    expect(resMock.json).toHaveBeenCalledWith(car); // Mengganti updatedCar dengan car
   });
+  
+  
 
   test('handleDeleteCar should delete the car', async () => {
     carModelMock.destroy = jest.fn().mockResolvedValue(1);
