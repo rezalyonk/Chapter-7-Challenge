@@ -1,6 +1,4 @@
-const dayjs = require("dayjs");
 const { Op } = require("sequelize");
-const ApplicationController = require("../controllers/ApplicationController");
 const CarController = require("../controllers/CarController");
 
 describe('CarController', () => {
@@ -134,7 +132,7 @@ describe('CarController', () => {
 
   test('handleUpdateCar should update the car', async () => {
     const updatedCar = { id: 1, name: 'Updated Car', price: 1500, size: 'Large', image: 'car.jpg' };
-    const car = { update: jest.fn().mockResolvedValue([1]) };
+    const car = { get: jest.fn().mockReturnValue({ update: jest.fn().mockResolvedValue([1]) }) };
     carController.getCarFromRequest = jest.fn().mockResolvedValue(car);
   
     reqMock.body = {
@@ -153,15 +151,11 @@ describe('CarController', () => {
       size: reqMock.body.size,
       image: reqMock.body.image,
       isCurrentlyRented: false,
-    });
+    });    
     expect(resMock.status).toHaveBeenCalledWith(200);
-    expect(resMock.json).toHaveBeenCalledWith(updatedCar); // Mengganti car dengan updatedCar
+    expect(resMock.json).toHaveBeenCalledWith(updatedCar);
   });
   
-  
-  
-  
-
   test('handleDeleteCar should delete the car', async () => {
     carModelMock.destroy = jest.fn().mockResolvedValue(1);
 
