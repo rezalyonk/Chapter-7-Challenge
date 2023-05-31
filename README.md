@@ -7,3 +7,20 @@ Tugas kalian disini adalah:
 3. Coverage minimal 70%
 
 Good luck!
+
+
+
+## Run Locally
+
+Install Node Module
+
+```bash
+  npm install
+```
+
+Start the unit test jest
+
+```bash
+  npm test
+```
+
