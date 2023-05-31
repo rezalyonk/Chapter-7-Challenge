@@ -1,11 +1,12 @@
 const { Op } = require("sequelize");
+const dayjs = require("dayjs");
+const { Car } = require("../models");
 const CarController = require("../controllers/CarController");
 
 describe('CarController', () => {
   let carController;
   let carModelMock;
   let userCarModelMock;
-  let dayjsMock;
   let reqMock;
   let resMock;
   let nextMock;
@@ -13,12 +14,11 @@ describe('CarController', () => {
   beforeEach(() => {
     carModelMock = {};
     userCarModelMock = {};
-    dayjsMock = jest.fn();
 
     carController = new CarController({
       carModel: carModelMock,
       userCarModel: userCarModelMock,
-      dayjs: dayjsMock,
+      dayjs: dayjs,
     });
 
     reqMock = {
@@ -143,6 +143,8 @@ describe('CarController', () => {
       size: 'Large',
       image: 'car.png',
     };
+  
+    carModelMock.findByPk = jest.fn().mockResolvedValue(carMock); // Menambahkan ini
   
     await carController.handleUpdateCar(reqMock, resMock);
   
